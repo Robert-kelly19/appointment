@@ -1,14 +1,26 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+import express from 'express';
+import path, { dirname } from 'path';
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+import indexRouter from './routes/index.js';
+import usersRouter from './routes/users.js';
+import authRouter from './routes/auth.js';
+import slotRouter from './routes/timeSlot.js';
+import appointmetRouter from './routes/appointment.js';
+// import swaggerUi from "swagger-ui-express"
+// import swaggerSpec from './swaggerConfig.js';
+import { fileURLToPath } from 'url';
+import winstonLogger from 'winston/lib/winston/config/index.js';
 
-var app = express();
+const app = express();
+const __filename=fileURLToPath(import.meta.url)
+const __dirname =dirname(__filename)
 
-app.use(logger('dev'));
+const morganFormat = process.env.NODE_ENV === "production" ? "dev" : 'combined'
+app.use(morgan(morganFormat, { stream: winstonLogger.stream }));
+
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -16,5 +28,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/auth',authRouter);
+app.use('/timeSlot', slotRouter);
+app.use("/appointment", appointmetRouter)
 
-module.exports = app;
+
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+export default app;
