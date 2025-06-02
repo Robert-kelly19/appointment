@@ -1,10 +1,6 @@
 import { query } from '../config/db.js';
 import logger from '../utils/logger.js';
 
-/**
- * Book a new appointment and notify via Socket.IO
- * Assumes `req.user.id` is available and `req.io` is set via middleware.
- */
 export async function createAppointment(req, res, next) {
   const userid= req.user.id;
   const { slotId } = req.body;
@@ -60,7 +56,6 @@ export const cancelAppointment = async (req, res, next) => {
   }
 
   try {
-    await query('BEGIN');
 
     const checkResult = await query(
       `
@@ -79,8 +74,6 @@ export const cancelAppointment = async (req, res, next) => {
 
     await query(`UPDATE appointment SET status = 'canceled' WHERE id = $1`, [appointmentId]);
     await query(`UPDATE timeslot SET is_reserved = FALSE WHERE id = $1`, [timeslotId]);
-
-    await query('COMMIT');
 
     logger.info(`Appointment cancelled: ${appointmentId} by client ${clientId}`);
     res.json({ message: "Appointment cancelled successfully" });

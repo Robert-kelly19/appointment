@@ -10,7 +10,7 @@ const Auth = (req, res, next) => {
         return res.status(401).json({message: 'Authorization denied, no token provided'})
     } try {
         const decoded = jwt.verify(token,process.env.JWT_SECRET)
-        req.user = decoded.provider
+        req.user = decoded.provider;
         logger.debug(`Authorization approved for ${req.user.id}`)
         next()
     } catch (error) {

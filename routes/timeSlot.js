@@ -1,7 +1,8 @@
 import express from 'express'
 import { createtimeSlotValidator, getslotIdvalidator } from '../validator/timeslot-validator.js'
-import { createTimeSlot, deleteSlot, getSlotBYId, getTimeSlot, updateTimeSlot } from '../controller/timeslot-controller.js'
+import { createTimeSlot, deleteSlot, getSlotBYId, getTimeSlot, updateTimeSlot, getAllTimeSlot} from '../controller/timeslot-controller.js'
 import Auth from '../middlewares/Authmiddleware.js'
+import authenticate from '../middlewares/OpenAuth.js'
 const router = express.Router()
 
 /**
@@ -243,5 +244,7 @@ router.put("/:id/updateSlot",getslotIdvalidator, Auth, createtimeSlotValidator, 
  */
 
 router.delete("/:id/delete-slot",getslotIdvalidator, Auth, deleteSlot)
+
+router.get("/allslot", authenticate, getAllTimeSlot )
 
 export default router

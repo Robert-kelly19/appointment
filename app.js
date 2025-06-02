@@ -2,6 +2,7 @@ import express from 'express';
 import path, { dirname } from 'path';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
+import cors from 'cors'
 
 import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
@@ -19,6 +20,23 @@ const __dirname =dirname(__filename)
 
 const morganFormat = process.env.NODE_ENV === "production" ? "dev" : 'combined'
 app.use(morgan(morganFormat, { stream: winstonLogger.stream }));
+
+const whitelist = [
+    'http://localhost:5173'
+  ];
+  
+  const corsOptions = {
+    origin: function (origin, callback) {
+      if (!origin || whitelist.includes(origin)) {
+        callback(null, true); 
+      } else {
+        callback(new Error('Not allowed by CORS')); 
+      }
+    },
+    credentials: true, 
+  };
+  
+  app.use(cors(corsOptions));
 
 app.use(morgan('dev'));
 app.use(express.json());

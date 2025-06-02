@@ -76,8 +76,15 @@ try {
       `)
     logger.info('successfully created timeslot table')
     
-    await query(` CREATE TYPE IF NOT EXISTS appointment_status AS ENUM ('booked', 'canceled');`)
+    await query(`  DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'appointment_status') THEN
+          CREATE TYPE appointment_status AS ENUM ('booked', 'canceled');
+        END IF;
+      END$$;`);
 
+      logger.info('enum type created successfully')
+      
     await client.query(`
       CREATE TABLE IF NOT EXISTS appointment (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

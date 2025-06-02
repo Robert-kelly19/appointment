@@ -107,3 +107,16 @@ export async function deleteSlot(req,res,next){
         return res.status(error.status||500).json({message:error.message || `server error while deleting ${slotId}`})
     }
 }
+
+export async function getAllTimeSlot(req,res,next) {
+    try {
+        const getslot = `SELECT id, day, start_time, end_time, is_reserved FROM timeslot WHERE is_reserved = false
+                        `;
+        const newResult= await query(getslot,)
+        logger.debug(`fetched ${newResult.rows.length} time slot`)
+        return res.status(200).json(newResult.rows)
+    } catch (error) {
+        logger.error(`failed to get time slot`)
+        return res.status(500).json({message: error.message|| 'server error while fetching time slot '})
+    }
+}

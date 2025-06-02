@@ -14,7 +14,7 @@ const appointAuth = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    req.user = decoded.user
+    req.user = decoded.user;
     logger.debug(`Authorization approved for user ${req.user.id}`)
     next()
   } catch (error) {
